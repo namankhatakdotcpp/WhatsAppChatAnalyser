@@ -219,6 +219,17 @@ def generate_message_pie_chart(name, df):
         explode = [0.1] * len(user_message_counts)
         wedges, texts, autotexts = ax.pie(user_message_counts, labels=None, autopct='%1.1f%%', startangle=140, explode=explode)
         legend_labels = [f'{user} ({count} Messages)' for user, count in zip(user_message_counts.index, user_message_counts)]
+    
+def generate_message_pie_chart(name, df):
+    if name == 'Overall':
+        user_message_counts = df['user'].value_counts()
+        sorted_users = user_message_counts.index.tolist()
+        fig, ax = plt.subplots(figsize=(8, 8))  # Set the figure size for better visualization
+        sorted_user_message_counts = user_message_counts.loc[sorted_users]
+        explode = [0.1] * len(sorted_user_message_counts)  # Explode all slices slightly for emphasis
+        wedges, texts, autotexts = ax.pie(sorted_user_message_counts, labels=None, autopct='', startangle=140, explode=explode)
+        legend_labels = [f'{user} ({count} Messages)' for user, count in zip(sorted_user_message_counts.index, sorted_user_message_counts)]
+# >>>>>>> ea6f6f9dce86aef1fd55ef2b0a0af65fc957510a:appy.py
         plt.legend(wedges, legend_labels, title='Users', loc='center left', bbox_to_anchor=(1, 0, 0.5, 1))
         plt.tight_layout()
         st.pyplot(fig)
@@ -231,12 +242,15 @@ def generate_deleted_message_pie_chart(name, df):
         if user_deleted_counts.empty:
             st.write("No deleted messages found.")
             return
+# <<<<<<< HEAD:app.py
         if len(user_deleted_counts) > 5:
             top_users = user_deleted_counts.head(5)
             other_users_count = user_deleted_counts.iloc[5:].sum()
             user_deleted_counts = top_users._append(pd.Series({'Others': other_users_count}))
         else:
             top_users = user_deleted_counts
+# =======
+# >>>>>>> ea6f6f9dce86aef1fd55ef2b0a0af65fc957510a:appy.py
         st.title("Deleted messages by users")
         fig, ax = plt.subplots(figsize=(8, 8))
         explode = [0.1] * len(user_deleted_counts)
@@ -350,12 +364,15 @@ def generate_tagged_person_pie_chart(name, df):
         if tagged_counts.empty:
             st.write("No tagged users found.")
             return
+# <<<<<<< HEAD:app.py
         if len(tagged_counts) > 5:
             top_users = tagged_counts.head(5)
             other_users_count = tagged_counts.iloc[5:].sum()
             tagged_counts = top_users._append(pd.Series({'Others': other_users_count}))
         else:
             top_users = tagged_counts
+# =======
+# >>>>>>> ea6f6f9dce86aef1fd55ef2b0a0af65fc957510a:appy.py
         st.title("Tagged Person")
         fig, ax = plt.subplots(figsize=(8, 8))
         explode = [0.1] * len(tagged_counts)
@@ -366,34 +383,142 @@ def generate_tagged_person_pie_chart(name, df):
         st.pyplot(fig)
         return tagged_counts
 
-def preprocess(data):
-    pattern = '\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{1,2}\s-\s'
-    pattern2 = '\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{1,2}\s[a,p]m\s-\s'
-    pattern3 = '\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{1,2}'
+# def preprocess(data):
+#     import re
+#     import pandas as pd
 
-    if re.findall(pattern, data):
-        messages = re.split(pattern, data)[1:]
-        dates = re.findall(pattern, data)
-        date_format = "%d/%m/%y, %H:%M - "
+#     pattern = r'\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{1,2}\s-\s'
+#     pattern2 = r'\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{1,2}\s[aApP][mM]\s-\s'
+#     pattern3 = re.compile(r'\d{2}/\d{2}/\d{2}, \d{1,2}:\d{2}\s?[aApP][mM]\s?-\s')
+
+#     if re.findall(pattern, data):
+#         messages = re.split(pattern, data)[1:]
+#         dates = re.findall(pattern, data)
+#         date_format = "%d/%m/%Y, %H:%M - "
+#     elif re.findall(pattern2, data):
+#         messages = re.split(pattern2, data)[1:]
+#         dates = re.findall(pattern2, data)
+#         date_format = "%d/%m/%y, %I:%M %p - "
+#     elif re.findall(pattern3, data):
+#         messages = re.split(pattern3, data)[1:]
+#         dates = re.findall(pattern3, data)
+#         date_format = "%d/%m/%y, %I:%M%p -"
+#     else:
+#         raise ValueError("Date pattern not recognized in data.")
+
+#     df = pd.DataFrame({'user_message': messages, 'date': dates})
+#     df['date'] = pd.to_datetime(df['date'], format=date_format)
+
+#     user = []
+#     messages_cleaned = []
+
+#     for message in df['user_message']:
+#         entry = re.split(r'([\w\W]+?):\s', message)
+#         if len(entry) >= 3:
+#             user.append(entry[1])
+#             messages_cleaned.append(entry[2])
+#         else:
+#             user.append('Group Notification')
+#             messages_cleaned.append(message)
+
+#     df['user'] = user
+#     df['message'] = messages_cleaned
+#     df.drop(['user_message'], axis=1, inplace=True)
+
+#     df['year'] = df['date'].dt.year
+#     df['month'] = df['date'].dt.month
+#     df['month_name'] = df['date'].dt.month_name()
+#     df['day'] = df['date'].dt.day
+#     df['day_name'] = df['date'].dt.day_name()
+#     df['hour'] = df['date'].dt.hour
+#     df['minute'] = df['date'].dt.minute
+
+#     return df
+
+import pandas as pd
+import re
+import urlextract
+from dateutil import parser
+
+import pandas as pd
+import re
+import json
+import urlextract
+
+import pandas as pd
+import re
+import json
+import urlextract
+
+import pandas as pd
+import re
+import json
+import urlextract
+
+
+import pandas as pd
+import re
+import json
+import urlextract
+
+def preprocess(data):
+    data = preprocessing(data)
+    # List of (pattern, datetime format, dayfirst) tuples
+    patterns_formats = [
+        # Your original formats (kept as-is)
+        (r'\d{1,2}[-/.]\d{1,2}[-/.]\d{4},\s\d{1,2}:\d{1,2}\s*-\s?', "%d/%m/%Y, %H:%M - ", True),
+        (r'\d{1,2}[-/.]\d{1,2}[-/.]\d{2},\s\d{1,2}:\d{1,2}\s*-\s?', "%d/%m/%y, %H:%M - ", True),
+        (r'\d{1,2}[-/.]\d{1,2}[-/.]\d{4},\s\d{1,2}:\d{1,2}\s*-\s?', "%m/%d/%Y, %H:%M - ", False),
+        (r'\d{1,2}[-/.]\d{1,2}[-/.]\d{2},\s\d{1,2}:\d{1,2}\s*-\s?', "%m/%d/%y, %H:%M - ", False),
+
+        (r'\d{1,2}[-/.]\d{1,2}[-/.]\d{4},\s\d{1,2}:\d{1,2}\s*[aApP][mM]\s*-\s?', "%d/%m/%Y, %I:%M %p - ", True),
+        (r'\d{1,2}[-/.]\d{1,2}[-/.]\d{2},\s\d{1,2}:\d{1,2}\s*[aApP][mM]\s*-\s?', "%d/%m/%y, %I:%M %p - ", True),
+        (r'\d{1,2}[-/.]\d{1,2}[-/.]\d{4},\s\d{1,2}:\d{1,2}\s*[aApP][mM]\s*-\s?', "%m/%d/%Y, %I:%M %p - ", False),
+        (r'\d{1,2}[-/.]\d{1,2}[-/.]\d{2},\s\d{1,2}:\d{1,2}\s*[aApP][mM]\s*-\s?', "%m/%d/%y, %I:%M %p - ", False),
+
+        # 📌 NEW formats added (non-destructively)
+        (r'\d{1,2}/\d{1,2}/\d{4},\s\d{1,2}:\d{1,2}', "%d/%m/%Y, %H:%M", True),
+        (r'\d{1,2}/\d{1,2}/\d{4},\s\d{1,2}:\d{1,2}\s*[aApP][mM]', "%d/%m/%Y, %I:%M %p", True),
+        (r'[A-Za-z]+\s\d{1,2},\s\d{4},\s\d{1,2}:\d{1,2}\s*[aApP][mM]', "%B %d, %Y, %I:%M %p", False),
+        (r'\d{1,2}\.\s[A-Za-z]+\s\d{4},\s\d{1,2}:\d{1,2}\s*-\s?', "%d. %B %Y, %H:%M - ", True),
+        (r'\d{1,2}/\d{1,2}/\d{2},\s\d{1,2}:\d{2}:\d{2} [APap][Mm]', "%d/%m/%y, %I:%M:%S %p", True)
+    ]
+
+    for pattern, date_format, dayfirst in patterns_formats:
+        if re.findall(pattern, data):
+            dates = re.findall(pattern, data)
+            messages = re.split(pattern, data)[1:]
+
+            df = pd.DataFrame({'user_message': messages, 'date': dates})
+
+            try:
+                # Remove brackets if needed
+                df['date'] = df['date'].str.strip("[]")
+                df['date'] = pd.to_datetime(df['date'], format=date_format, dayfirst=dayfirst)
+                break  # Successful parse
+            except ValueError:
+                continue
+
     else:
-        messages = re.split(pattern2, data)[1:]
-        dates = re.findall(pattern2, data)
-        date_format = "%d/%m/%y, %I:%M %p - "
-    df = pd.DataFrame({'user_message' : messages, 'date' : dates})
-    df['date'] = pd.to_datetime(df['date'], format=date_format)
-    user = []
-    messages = []
+        return None  # No valid pattern matched
+
+    # Extract user and clean messages
+    users = []
+    clean_messages = []
     for message in df['user_message']:
-        entry = re.split('([\w\W]+?):\s', message)
-        if(entry[1:]):
-            user.append(entry[1])
-            messages.append(entry[2])
+        entry = re.split(r'([\w\W]+?):\s', message)
+        if len(entry) >= 3:
+            users.append(entry[1])
+            clean_messages.append(entry[2])
         else:
-            user.append('Group Notification')
-            messages.append(message)
-    df['user'] = user
-    df['message'] = messages
-    df = df.drop(['user_message'], axis = 1)
+            users.append("Group Notification")
+            clean_messages.append(message)
+
+    df['user'] = users
+    df['message'] = clean_messages
+    df = df.drop(columns=['user_message'])
+
+    # Extract datetime components
     df['year'] = df['date'].dt.year
     df['month'] = df['date'].dt.month
     df['month_name'] = df['date'].dt.month_name()
@@ -401,7 +526,29 @@ def preprocess(data):
     df['day_name'] = df['date'].dt.day_name()
     df['hour'] = df['date'].dt.hour
     df['minute'] = df['date'].dt.minute
+
+    # Extra flags
+    extractor = urlextract.URLExtract()
+    df['islink'] = df['message'].apply(lambda msg: len(extractor.find_urls(msg)) > 0)
+    df['isimage'] = df['message'].apply(lambda msg: 'media omitted' in msg.lower() or 'image omitted' in msg.lower())
+    df['isdeleted'] = df['message'].apply(
+        lambda msg: msg.strip() in ['This message was deleted', 'You deleted this message', 'You deleted this message.'])
+
     return df
+
+def preprocessing(data):
+    data = data.replace('\u202F', ' ')  # Convert narrow space to normal space
+    data = data.replace('[', '')  # Convert narrow space to normal space
+    data = data.replace(']', '')  # Convert narrow space to normal space
+    return data  # ✅ return just the string, not a tuple
+
+def process_chat(content):
+    df = preprocess(content)
+    df['date'] = df['date'].astype(str)  # Make datetime JSON serializable
+    return json.dumps(df.to_dict(orient='records'))
+
+
+
 
 def sidenames(df):
     names = df.user.unique()
@@ -549,7 +696,10 @@ if uploaded_file is not None:
     bytes_data = uploaded_file.getvalue()
     data = bytes_data.decode('utf-8')
     df = preprocess(data)
+    # datass = preprocessing(data)
+    # st.text(datass)
     names = sidenames(df)
+    print(len(df))
     name = st.sidebar.selectbox("Choose the user", names)
     if(st.sidebar.button('Show Analysis')):
         dfe = showdf(name, df)
@@ -569,6 +719,8 @@ In terms of your interaction patterns, your highest activity time is during {use
 Additionally, your favorite word (the most used during our chats) is '{user_summary['top_word'].iloc[0]}', and {"You haven't used any emojis during your conversation" if user_summary['most_used_emoji'].iloc[0] == 0 else f" your most used emoji is {user_summary['most_used_emoji'].iloc[0]}"}.
 
 For further details, please see below. Have a great day!
+
+Thank you for your participation! For further details, please see below. Have a great day!
 """
             st.write(text)
         st.markdown("<h1 style='border-bottom : 2px solid white; text-align: center;'>Top Statistics</h1>", unsafe_allow_html=True)
