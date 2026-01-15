@@ -57,6 +57,31 @@ The application is built using **Kotlin for Android** and **Python for data proc
 ---
 
 ---
+## 📸 App Screenshots
+
+<table>
+  <tr>
+    <td><img src="screenshots/455855662-26216b52-dfa9-4637-a399-821381af80f0.jpeg" width="250"/></td>
+    <td><img src="screenshots/455855653-abbf3c5f-bcba-4077-b291-2abebf47afa3.jpeg" width="250"/></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/455855648-e52df384-b7cf-40ec-ba6c-60f4f546cb7b.jpeg" width="250"/></td>
+    <td><img src="screenshots/455855644-096ccedb-792e-438f-aa61-c6acea818ee0.jpeg" width="250"/></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/455855640-58d3c60b-b3e7-4f2b-b65c-8207b855c8b5.jpeg" width="250"/></td>
+    <td><img src="screenshots/455855637-8c00e93a-585d-405f-af4c-71d1dccd0f3e.jpeg" width="250"/></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/455855634-410d4db3-b5ba-4e4d-ab26-a6a5164ea7bd.jpeg" width="250"/></td>
+    <td><img src="screenshots/455855627-67c49c4b-e1ab-4dc2-b86d-6f09c74af213.jpeg" width="250"/></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/455855623-30dcb844-3a7e-4282-9efa-20a27292fc71.jpeg" width="250"/></td>
+    <td><img src="screenshots/455855662-26216b52-dfa9-4637-a399-821381af80f0.jpeg" width="250"/></td>
+  </tr>
+</table>
+
 
 ### 📥 Installation Steps
 
