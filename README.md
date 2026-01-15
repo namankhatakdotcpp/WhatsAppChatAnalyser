@@ -87,8 +87,7 @@ The application is built using **Kotlin for Android** and **Python for data proc
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/namankhatakdotcpp/WhatsAppChatAnalyser.git
+bash git clone https://github.com/namankhatakdotcpp/WhatsAppChatAnalyser.git
 
 2. Open the **WhatsApp Chat Analyzer** app.
 
